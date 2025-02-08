@@ -11,6 +11,33 @@ import csv
 from datetime import datetime
 from scipy.signal import savgol_filter
 from scipy import signal
+import time
+
+def is_file_ready(file_path, max_retries=5, delay=1):
+    """
+    Checks if the file is ready for processing.
+    It retries for a given number of times, checking if the file can be opened.
+    """
+    for attempt in range(max_retries):
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, 'rb'):
+                    return True
+            except Exception as e:
+                print(f"Attempt {attempt + 1}: File not ready yet. Retrying...")
+        time.sleep(delay)  # wait before retrying
+    return False
+
+def delete_file_if_exists(file_path):
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+            print(f"File {file_path} has been deleted.")
+        except Exception as e:
+            print(f"Error while deleting file {file_path}: {e}")
+    else:
+        print(f"File {file_path} does not exist.")
+
 
 def getTopFile(folder_path):
 	files = os.listdir(folder_path)
@@ -90,6 +117,11 @@ def processTopAudioFile(fileDirectory):
 	audio_filename = os.path.join(folder_path, first_file)
 	output_file = "preprocessed.csv"
 
+	# Check if the file is ready before proceeding
+	if not is_file_ready(audio_filename):
+		print(f"Error: {audio_filename} is not ready after multiple retries.")
+		return None
+
 	##Read audio file
 	y, sr = librosa.load(audio_filename)
 	duration = librosa.get_duration(y=y, sr=sr)
@@ -125,6 +157,7 @@ def processTopAudioFile(fileDirectory):
 	##Remove isolated 1s shorter than 5 seconds
 	timed_filted = whatIsAnEvent(timed_filted, 5 / (hop_length * 1. /sr))
 
+	print("checkpoint 1")
 
 	##change the timestamp from frame number to seconds
 	##for all frames within a second, if there is a 1, then the second is 0, otherwise 0
@@ -180,3 +213,5 @@ def processTopAudioFile(fileDirectory):
 		with open("crying_log.txt", "a", newline='') as log_file:
 			log_writer = csv.writer(log_file)
 			log_writer.writerow([message])
+
+	delete_file_if_exists(audio_filename)

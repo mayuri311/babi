@@ -11,7 +11,7 @@ from audio import live_segmentation as ap
 import threadedAudioProcessing as tap
 
 stop_threads = False
-audio_segment_length = 5
+audio_segment_length = 10
 
 # Audio sampling task
 def audio_sampling():
@@ -24,7 +24,7 @@ def audio_processing():
     global stop_threads
     global audio_segment_length
 
-    wav_path = os.path.join(os.getcwd(), "audio/Segments")
+    wav_path = os.path.join(os.getcwd(), "audio\\Segments")
 
     while not stop_threads:
         # Simulate audio processing (e.g., analyzing the saved wav file)
