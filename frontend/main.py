@@ -7,6 +7,7 @@ import base64
 import signal
 import time
 import sys
+import urllib.request
 from PIL import Image
 # import torch
 # print("hurry tf up")
@@ -18,36 +19,35 @@ from fastapi import Response
 
 from nicegui import Client, app, core, run, ui
 from datetime import datetime
-# from webcam_detection import detect_boxes
+# Comment out to run without OwlViT
+from webcam_detection import detect_boxes
 
 # In case you don't have a webcam, this will provide a black placeholder image.
 black_1px = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBg+A8AAQQBAHAgZQsAAAAASUVORK5CYII='
 placeholder = Response(content=base64.b64decode(black_1px.encode('ascii')), media_type='image/png')
 
-# def constructClassList(filename):
-#     file = open(filename, "r")
-#     outputList = []
-#     # Read each line one by one
-#     for line in file:
-#         cat = line.strip()
-#         if cat[0] in ["a", "e", "i", "o", "u"]:
-#             outputList.append("picture of an " + cat)  # .strip() to remove newline characters
-#         else:
-#             outputList.append(" picture of a " + cat)
-#     # Close the file
-#     file.close()
-#     return [outputList]
+async def owl_vit_detection():
+        video_capture = cv2.VideoCapture(0)
+        if not video_capture.isOpened():
+            return placeholder
+        # The `video_capture.read` call is a blocking function.
+        # So we run it in a separate thread (default executor) to avoid blocking the event loop.
+        _, frame = await run.io_bound(video_capture.read)
+        if frame is None:
+            return placeholder
 
-# def is_overlapping(box1, box2):
-#     # Unpack the bounding boxes
-#     x1_min, y1_min, x1_max, y1_max = box1
-#     x2_min, y2_min, x2_max, y2_max = box2
-#     # Check if there is an overlap
-#     if x1_min < x2_max and x1_max > x2_min and y1_min < y2_max and y1_max > y2_min:
-#         return True
-#     return False
+        # Comment out to run without OwlViT
+        safety = detect_boxes(frame)
 
-# text_labels = constructClassList("../OWL_VIT/Dangerous_Objects.txt")
+        # Give alerts if baby is out of crib
+        if safety:
+            if safety == "DANGER":
+                simulate_danger()
+            if safety == "SAFE":
+                simulate_danger()
+        # else:
+        #     simulate_danger()
+        return safety
 
 def convert(frame: np.ndarray) -> bytes:
     """Converts a frame from OpenCV to a JPEG image.
@@ -63,10 +63,11 @@ def convert(frame: np.ndarray) -> bytes:
 def setup() -> None:
     # OpenCV is used to access the webcam.
     video_capture = cv2.VideoCapture(0)
-
+    
     @app.get('/video/frame')
     # Thanks to FastAPI's `app.get` it is easy to create a web route which always provides the latest image from OpenCV.
     async def grab_video_frame() -> Response:
+        # print("getting frame")
         if not video_capture.isOpened():
             return placeholder
         # The `video_capture.read` call is a blocking function.
@@ -74,8 +75,8 @@ def setup() -> None:
         _, frame = await run.io_bound(video_capture.read)
         if frame is None:
             return placeholder
+
         # `convert` is a CPU-intensive function, so we run it in a separate process to avoid blocking the event loop and GIL.
-        # frame =  detect_boxes(frame)
         jpeg = await run.cpu_bound(convert, frame)
         return Response(content=jpeg, media_type='image/jpeg')
 
@@ -89,6 +90,8 @@ def setup() -> None:
         # Timer to update the webcam feed
         ui.timer(interval=0.1, callback=lambda: video_image.set_source(f'/video/frame?{time.time()}'))
 
+        ui.timer(interval=0.5, callback=lambda: owl_vit_detection())
+
         # Buttons below the webcam feed
         ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
         ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
@@ -97,7 +100,6 @@ def setup() -> None:
     # A timer constantly updates the source of the image.
     # Because data from same paths is cached by the browser,
     # we must force an update by adding the current timestamp to the source.
-    ui.timer(interval=0.1, callback=lambda: video_image.set_source(f'/video/frame?{time.time()}'))
 
     async def disconnect() -> None:
         """Disconnect all clients from current running server."""

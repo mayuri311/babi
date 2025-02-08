@@ -67,12 +67,12 @@ def detect_boxes(frame):
             box = [round(i, 2) for i in box.tolist()]
             cv2.rectangle(frame, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255, 0, 0), 2)
             cv2.putText(frame, f"{text_label[14:]}: {round(score.item(), 3)}", (int(box[0]), int(box[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
-
+    output = None
     if crib_box != None and baby_box != None:
         if not is_overlapping(crib_box, baby_box):
             cv2.putText(frame, "DANGER", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            print("DANGER")
+            output = "DANGER"
         else:
             cv2.putText(frame, "SAFE", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-            print("SAFE")
-    return frame
+            output = "SAFE"
+    return output
