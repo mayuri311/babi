@@ -12,13 +12,10 @@ from scipy.signal import savgol_filter
 from scipy import signal
 
 def getTopFile(folder_path):
-	files = os
-	files = [f for f in files if os.path.isfile(os.path.join(folder_path, f))]
-	files.sort()
-	if files:
-		return os.path.join(folder_path, files[0])
-	else:
+	files = os.listdir(folder_path)
+	if not files:
 		return None
+	return files[0]
 
 def whatIsAnEvent(data, event_thre):
 	'''
@@ -71,7 +68,8 @@ n_fft = 1764
 hop_length = 882
 n_mels = 128
 
-folder_path = '/cryingdataset'
+script_directory = os.path.dirname(os.path.abspath(__file__))
+folder_path = os.path.join(script_directory, 'cryingdataset')
 first_file = getTopFile(folder_path)
 if first_file:
 	print(f"First file in the folder: {first_file}")
@@ -79,9 +77,8 @@ else:
 	print("The folder is empty or contains no files.")
 
 ##Set your filenames
-audio_filename = '/cryingdataset/5B416CE8-2591-4531-9ADC-86D085B5D48B-1430144827-1.0-m-48-ti.wav'
+audio_filename = os.path.join(folder_path, first_file)
 output_file = "preprocessed.csv"
-
 
 ##Read audio file
 y, sr = librosa.load(audio_filename)
