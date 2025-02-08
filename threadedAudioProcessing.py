@@ -211,6 +211,7 @@ def processTopAudioFile(fileDirectory):
 		print(message)
 
 		with open("frontend/crying_log.txt", "a", newline='') as log_file:
+
 			log_writer = csv.writer(log_file)
 			log_writer.writerow([message])
 

@@ -5,13 +5,15 @@ import pyaudio
 import wave
 import cv2
 import os
-
+from fastapi import Response, status
+import main_auxilary as run
 
 from audio import live_segmentation as ap
 import threadedAudioProcessing as tap
 
 stop_threads = False
 audio_segment_length = 10
+
 
 # Audio sampling task
 def audio_sampling():
@@ -38,22 +40,7 @@ def audio_processing():
 def image_processing():
     global stop_threads
 
-    cap = cv2.VideoCapture(0)  # Capture from webcam
-
-    while not stop_threads:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        cv2.imshow("Webcam Feed", frame)
-        
-        # Add your image processing logic here
-        # (e.g., detecting movement, baby posture, etc.)
-
-        if cv2.waitKey(1) & 0xFF == ord('q') or stop_threads:
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
+    thereallyjankfunction()
 
 # Create threads for each task
 audio_sampling_thread = threading.Thread(target=audio_sampling)

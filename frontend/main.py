@@ -15,6 +15,8 @@ from fastapi import Response
 # import main_auxilary
 from main_auxilary import owl_vit_detection
 
+import cry_plotter_test as cryplot
+
 from nicegui import Client, app, core, run, ui
 from datetime import datetime
 
@@ -52,6 +54,9 @@ def setup() -> None:
         # ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
         # ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
 
+        cryplot.plotCryLogGraph()
+
+        ui.image('crying_detections.png').style('width: 960px; height: 540px; margin_top: 20px; border-radius: 15px; justify-content: center; align-items: center;')
     async def disconnect() -> None:
         """Disconnect all clients from current running server."""
         for client_id in Client.instances:
@@ -79,7 +84,7 @@ def setup() -> None:
 def read_last_log_entry():
     """Reads the last entry from the crying_log.txt file."""
     try:
-        with open("crying_log.txt", "r") as file:
+        with open("/frontend/crying_log.txt", "r") as file:
             lines = file.readlines()
             if lines:
                 return lines[-1].strip()  # Get the last line (most recent cry)
@@ -113,6 +118,7 @@ def simulate_crying():
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current timestamp
     log_event("🚨Baby is crying!", "red")
     ui.notify("Baby is crying!", color= "#red", position="top-right")  # Top-right position for notification
+
 
 def simulate_danger():
     log_event("⚠️ Baby near a danger zone!", "orange")

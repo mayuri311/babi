@@ -38,11 +38,7 @@ def plotCryLogGraph():
     plt.title('Baby Crying Detections by Hour (Last 24 Hours)')
     plt.xticks(rotation=45)
     plt.tight_layout()
-    plt.show()
+    # plt.show()
 
     # Save the plot to a BytesIO object
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    img = Image.open(buf)
-    return img
+    plt.savefig('crying_detections.png')
