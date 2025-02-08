@@ -1,4 +1,4 @@
-import cv2
+import cv2g
 import sys
 from PIL import Image
 import torch
