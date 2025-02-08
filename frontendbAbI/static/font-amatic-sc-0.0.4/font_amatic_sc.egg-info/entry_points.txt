@@ -1,0 +1,3 @@
+[fonts_ttf]
+amatic-sc = font_amatic_sc:font_files
+

@@ -1,0 +1,34 @@
+Metadata-Version: 1.1
+Name: font-amatic-sc
+Version: 0.0.4
+Summary: Amatic SC hand-drawn font
+Home-page: https://github.com/pimoroni/fonts-python
+Author: Philip Howard
+Author-email: phil@pimoroni.com
+License: SIL OFL 1.1
+Description: Fonts: Amatic SC
+        ================
+        
+        Amatic SC is a hand-drawn font by Vernon Adams released under the OFL.
+        
+        Preview: https://www.fontsquirrel.com/fonts/amatic
+        
+        This font has been repackaged for the Python Fonts module: https://pypi.org/project/fonts/
+        
+        Copyright 2011, Vernon Adams. Redistributed under the terms of the SIL Open Font License: https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+        
+        0.0.4
+        =====
+        
+        * Updated licenses to better reflect OFL nature of the font itself and dropped references to MIT
+Keywords: Amatic SC Font
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Operating System :: POSIX :: Linux
+Classifier: License :: OSI Approved :: SIL Open Font License 1.1 (OFL-1.1)
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development
+Classifier: Topic :: Text Processing :: Fonts
