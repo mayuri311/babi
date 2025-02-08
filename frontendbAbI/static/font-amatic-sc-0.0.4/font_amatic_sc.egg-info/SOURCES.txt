@@ -1,0 +1,14 @@
+CHANGELOG.txt
+MANIFEST.in
+README.rst
+setup.py
+font_amatic_sc/__init__.py
+font_amatic_sc.egg-info/PKG-INFO
+font_amatic_sc.egg-info/SOURCES.txt
+font_amatic_sc.egg-info/dependency_links.txt
+font_amatic_sc.egg-info/entry_points.txt
+font_amatic_sc.egg-info/not-zip-safe
+font_amatic_sc.egg-info/top_level.txt
+font_amatic_sc/files/AmaticSC-Bold.ttf
+font_amatic_sc/files/AmaticSC-Regular.ttf
+font_amatic_sc/files/OFL.txt

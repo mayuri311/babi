@@ -1,0 +1,7 @@
+include CHANGELOG.txt
+include LICENSE.txt
+include README.txt
+include setup.py
+recursive-include font_amatic_sc *.py
+recursive-include font_amatic_sc/files *.ttf
+include font_amatic_sc/files/OFL.txt
