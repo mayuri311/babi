@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from nicegui import Client, app, core, run, ui
 from nicegui.events import ValueChangeEventArguments
 from datetime import datetime
-from webcam_detection import detect_boxes
+# from webcam_detection import detect_boxes
 
 
 video_capture = cv2.VideoCapture(0)
@@ -30,7 +30,7 @@ def thereallyjankfunction():
         if frame is None:
             return placeholder
         # `convert` is a CPU-intensive function, so we run it in a separate process to avoid blocking the event loop and GIL.
-        frame =  detect_boxes(frame)
+        # frame =  detect_boxes(frame)
         jpeg = await run.cpu_bound(convert, frame)
         return Response(content=jpeg, media_type='image/jpeg')
     

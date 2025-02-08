@@ -9,9 +9,7 @@ import time
 import sys
 from PIL import Image
 # import torch
-# print("hurry tf up")
 # from transformers import OwlViTProcessor, OwlViTForObjectDetection
-# print("hurry tf up")
 import cv2
 import numpy as np
 from fastapi import Response
