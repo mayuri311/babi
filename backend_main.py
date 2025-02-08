@@ -24,7 +24,7 @@ def audio_processing():
     global stop_threads
     global audio_segment_length
 
-    wav_path = os.path.join(os.getcwd(), "audio\\Segments")
+    wav_path = os.path.join(os.getcwd(), "audio/Segments")
 
     while not stop_threads:
         # Simulate audio processing (e.g., analyzing the saved wav file)
