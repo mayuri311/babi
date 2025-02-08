@@ -1,0 +1,6 @@
+stairs
+knives
+scissors
+tools
+small toy
+cords
