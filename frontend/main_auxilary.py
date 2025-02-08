@@ -16,6 +16,30 @@ def convert(frame: np.ndarray) -> bytes:
     _, imencode_image = cv2.imencode('.jpg', frame)
     return imencode_image.tobytes()
 
+async def owl_vit_detection():
+        video_capture = cv2.VideoCapture(0)
+        if not video_capture.isOpened():
+            return placeholder
+        # The `video_capture.read` call is a blocking function.
+        # So we run it in a separate thread (default executor) to avoid blocking the event loop.
+        _, frame = await run.io_bound(video_capture.read)
+        if frame is None:
+            return placeholder
+
+        # Comment out to run without OwlViT
+        safety = detect_boxes(frame)
+
+        # Give alerts if baby is out of crib
+        if safety:
+            if safety == "DANGER":
+                simulate_danger()
+            if safety == "SAFE":
+                simulate_danger()
+        # else:
+        #     simulate_danger()
+        print(safety)
+        return safety
+
 def thereallyjankfunction():
     # OpenCV is used to access the webcam.
 
@@ -30,17 +54,9 @@ def thereallyjankfunction():
         if frame is None:
             return placeholder
         # `convert` is a CPU-intensive function, so we run it in a separate process to avoid blocking the event loop and GIL.
-        frame =  detect_boxes(frame)
         jpeg = await run.cpu_bound(convert, frame)
         return Response(content=jpeg, media_type='image/jpeg')
-    
-    @app.get('/cryinglog')
-    async def cryinglog():
-        with open("cryinglog.txt", "r") as f:
-            lines = f.readlines()
-        return lines
         
-    
     @asynccontextmanager
     async def shutdown_event():
     # Release the webcam hardware so it can be used by other applications again.

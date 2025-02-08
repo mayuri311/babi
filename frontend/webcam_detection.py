@@ -55,8 +55,13 @@ def detect_boxes(frame):
     baby_score = 0
     crib_box = None
     crib_score = 0
+    highest_score = 0;
+    highest_label = None;
     # Draw the bounding boxes and labels on the frame
     for box, score, text_label in zip(boxes, scores, result_labels):
+        if score.item() > highest_score:
+            highest_score = score.item()
+            highest_label = text_label
         if score.item() >= .2 or 'crib' in text_label:
             if ("baby" in text_label or "infant" in text_label or "person" in text_label or "child" in text_label) and score.item() > baby_score:
                 baby_box = box
@@ -75,4 +80,4 @@ def detect_boxes(frame):
         else:
             cv2.putText(frame, "SAFE", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             output = "SAFE"
-    return output
+    return highest_label

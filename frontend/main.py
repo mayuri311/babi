@@ -9,14 +9,11 @@ import time
 import sys
 import urllib.request
 from PIL import Image
-# import torch
-# print("hurry tf up")
-# from transformers import OwlViTProcessor, OwlViTForObjectDetection
-# print("hurry tf up")
 import cv2
 import numpy as np
 from fastapi import Response
-import main_auxilary
+# import main_auxilary
+from main_auxilary import owl_vit_detection
 
 from nicegui import Client, app, core, run, ui
 from datetime import datetime
@@ -24,19 +21,6 @@ from datetime import datetime
 # In case you don't have a webcam, this will provide a black placeholder image.
 black_1px = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBg+A8AAQQBAHAgZQsAAAAASUVORK5CYII='
 placeholder = Response(content=base64.b64decode(black_1px.encode('ascii')), media_type='image/png')
-
-
-# def is_overlapping(box1, box2):
-#     # Unpack the bounding boxes
-#     x1_min, y1_min, x1_max, y1_max = box1
-#     x2_min, y2_min, x2_max, y2_max = box2
-#     # Check if there is an overlap
-#     if x1_min < x2_max and x1_max > x2_min and y1_min < y2_max and y1_max > y2_min:
-#         return True
-#     return False
-
-# text_labels = constructClassList("../OWL_VIT/Dangerous_Objects.txt")
-
 
 def setup() -> None:
 
@@ -72,7 +56,7 @@ def setup() -> None:
         ui.timer(1, lambda: signal.default_int_handler(signum, frame), once=True)
 
 
-    app.on_shutdown(main_auxiliary.shutdown_event)
+    app.on_shutdown(main_auxilary.shutdown_event)
     signal.signal(signal.SIGINT, handle_sigint)
     # We also need to disconnect clients when the app is stopped with Ctrl+C,
     # because otherwise they will keep requesting images which lead to unfinished subprocesses blocking the shutdown.
