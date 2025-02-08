@@ -2,11 +2,9 @@ import cv2
 from PIL import Image
 import torch
 from transformers import OwlViTProcessor, OwlViTForObjectDetection
-
 # Initialize the processor and model
 processor = OwlViTProcessor.from_pretrained("google/owlvit-base-patch32")
 model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32")
-
 # Open a connection to the webcam
 cap = cv2.VideoCapture(0)
 
