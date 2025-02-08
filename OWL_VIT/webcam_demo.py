@@ -36,6 +36,7 @@ while True:
     results = processor.post_process_grounded_object_detection(
         outputs=outputs, target_sizes=target_sizes, threshold=0.1, text_labels=text_labels
     )
+    print(results)
     # Retrieve predictions for the first image for the corresponding text queries
     result = results[0]
     boxes, scores, result_labels = result["boxes"], result["scores"], result["text_labels"]

@@ -1,3 +1,7 @@
+person
+fork
+water bottle
+phone
 stairs
 knives
 scissors
