@@ -80,8 +80,20 @@ def setup() -> None:
         return Response(content=jpeg, media_type='image/jpeg')
 
     # For non-flickering image updates and automatic bandwidth adaptation an interactive image is much better than `ui.image()`.
-    video_image = ui.interactive_image().classes('w-full h-full')
-    video_image.style('width: 960px; height: 540px; margin-top: 100px; margin-bottom: 20px; border-radius: 15px; justify-content: center; align-items: center;')
+    with ui.column().style('gap: 20px; justify-content: center; align-items: center;'):
+
+        # Webcam feed at the top
+        video_image = ui.interactive_image().classes('w-full h-full')
+        video_image.style('width: 960px; height: 540px; margin_top: 20px; border-radius: 15px; justify-content: center; align-items: center;')
+
+        # Timer to update the webcam feed
+        ui.timer(interval=0.1, callback=lambda: video_image.set_source(f'/video/frame?{time.time()}'))
+
+        # Buttons below the webcam feed
+        ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
     # A timer constantly updates the source of the image.
     # Because data from same paths is cached by the browser,
     # we must force an update by adding the current timestamp to the source.
@@ -182,11 +194,11 @@ ui.image('logo2.png').style('width: 175px; height: 55px; position: absolute; top
 #     ui.label("🔴 Live Camera Feed Placeholder").style('font-size: 24px; font-weight: bold; color: #333;')
 
 # Buttons for Simulated Events with improved style
-with ui.row().style('gap: 15px; justify-content: center; margin-top: 40px;'):
-    ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-    ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-    ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-    ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+# with ui.column().style('gap: 15px; justify-content: center; margin-top: 20px;'):
+#     ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+#     ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+#     ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+#     ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
 
 # Start the app
 ui.run()
