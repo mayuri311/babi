@@ -10,6 +10,7 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog
 print("hurry tf up")
 from transformers import OwlViTProcessor, OwlViTForObjectDetection
+print("hurry tf up")
 
 def constructDangerousObjectsList(filename):
     file = open(filename, "r")
