@@ -25,8 +25,6 @@ def is_overlapping(box1, box2):
     # Unpack the bounding boxes
     x1_min, y1_min, x1_max, y1_max = box1
     x2_min, y2_min, x2_max, y2_max = box2
-    print(x1_min, x1_max)
-    print(x2_min, x2_max)
     # Check if there is an overlap
     if x1_min < x2_max and x1_max > x2_min and y1_min < y2_max and y1_max > y2_min:
         return True
@@ -35,6 +33,7 @@ def is_overlapping(box1, box2):
 text_labels = constructClassList("Dangerous_Objects.txt")
 
 def detect_boxes(frame):
+    print("detecting")
     image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     # Process the image and perform object detection
@@ -80,4 +79,4 @@ def detect_boxes(frame):
         else:
             cv2.putText(frame, "SAFE", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             output = "SAFE"
-    return highest_label
+    return output

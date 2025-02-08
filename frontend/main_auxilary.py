@@ -16,29 +16,19 @@ def convert(frame: np.ndarray) -> bytes:
     _, imencode_image = cv2.imencode('.jpg', frame)
     return imencode_image.tobytes()
 
-async def owl_vit_detection():
-        video_capture = cv2.VideoCapture(0)
-        if not video_capture.isOpened():
-            return placeholder
-        # The `video_capture.read` call is a blocking function.
-        # So we run it in a separate thread (default executor) to avoid blocking the event loop.
-        _, frame = await run.io_bound(video_capture.read)
-        if frame is None:
-            return placeholder
+async def owl_vit_detection(value):
+    video_capture = cv2.VideoCapture(0)
+    if not video_capture.isOpened():
+        return placeholder
+    # The `video_capture.read` call is a blocking function.
+    # So we run it in a separate thread (default executor) to avoid blocking the event loop.
+    _, frame = await run.io_bound(video_capture.read)
+    if frame is None:
+        return placeholder
 
-        # Comment out to run without OwlViT
-        safety = detect_boxes(frame)
-
-        # Give alerts if baby is out of crib
-        if safety:
-            if safety == "DANGER":
-                simulate_danger()
-            if safety == "SAFE":
-                simulate_danger()
-        # else:
-        #     simulate_danger()
-        print(safety)
-        return safety
+    # Comment out to run without OwlViT
+    safety = detect_boxes(frame)
+    return safety
 
 def thereallyjankfunction():
     # OpenCV is used to access the webcam.

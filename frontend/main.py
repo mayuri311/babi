@@ -22,6 +22,13 @@ from datetime import datetime
 black_1px = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBg+A8AAQQBAHAgZQsAAAAASUVORK5CYII='
 placeholder = Response(content=base64.b64decode(black_1px.encode('ascii')), media_type='image/png')
 
+async def vit_handler():
+    safety = await owl_vit_detection("filler")
+    print(safety)
+    if safety:
+        if safety == "DANGER":
+            simulate_danger()
+
 def setup() -> None:
 
     image_frame = 'http://172.26.119.17:8080/video/frame'
@@ -36,7 +43,7 @@ def setup() -> None:
         # Timer to update the webcam feed
         ui.timer(interval=0.1, callback=lambda: video_image.set_source(f'/video/frame?{time.time()}'))
 
-        ui.timer(interval=0.5, callback=lambda: owl_vit_detection())
+        ui.timer(interval=0.5, callback=lambda: vit_handler())
 
         # Buttons below the webcam feed
         ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
