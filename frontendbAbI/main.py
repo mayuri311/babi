@@ -16,6 +16,7 @@ import numpy as np
 from fastapi import Response
 
 from nicegui import Client, app, core, run, ui
+from datetime import datetime
 
 # In case you don't have a webcam, this will provide a black placeholder image.
 black_1px = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBg+A8AAQQBAHAgZQsAAAAASUVORK5CYII='
@@ -152,6 +153,60 @@ def setup() -> None:
 
 # All the setup is only done when the server starts. This avoids the webcam being accessed
 # by the auto-reload main process (see https://github.com/zauberzeug/nicegui/discussions/2321).
+
+# Function to load CSV data
+# def load_text():
+#     try:
+#         with open("crying_log.txt", "r", encoding="utf-8") as file:
+#             content = file.read()
+#         text_area.set_value(content)  # Display content in textarea
+#     except FileNotFoundError:
+#         ui.notify("File not found!", level="error")
+
+# ui.button("Load TXT File", on_click=load_text)
+
+# text_area = ui.textarea(label="File Content", readonly=True).style("width: 100%; height: 300px;")
+
+
+# def log_cry_event():
+#     """Logs the current time when the baby cries."""
+#     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#     with open(LOG_FILE, "a") as f:
+#         f.write(f"{timestamp}\n")  # Append timestamp to the log file
+#     ui.notify(f"Baby cried at {timestamp}", color="red", position="top-right")
+#     update_log_display()
+
+# def read_log():
+#     """Reads the log file and returns its contents."""
+#     try:
+#         with open(LOG_FILE, "r") as f:
+#             return f.readlines()
+#     except FileNotFoundError:
+#         return ["No log entries yet."]
+
+# def update_log_display():
+#     """Updates the UI with the latest log contents."""
+#     log_content.clear()
+#     for line in read_log():
+#         ui.label(line.strip()).style("font-size: 16px; margin-bottom: 5px;")
+
+# with ui.card():
+#     ui.label("Cry Log").style("font-size: 20px; font-weight: bold;")
+#     log_content = ui.column()  # Placeholder for log entries
+#     update_log_display()  # Populate log display on startup
+
+def read_last_log_entry():
+    """Reads the last entry from the crying_log.txt file."""
+    try:
+        with open("crying_log.txt", "r") as file:
+            lines = file.readlines()
+            if lines:
+                return lines[-1].strip()  # Get the last line (most recent cry)
+            else:
+                return "No entries yet."
+    except FileNotFoundError:
+        return "Log file not found."
+
 app.on_startup(setup)
 
 ui.add_css(f"""
@@ -165,13 +220,16 @@ ui.add_css(f"""
 # Create a placeholder for the event log
 event_log = ui.column().style('max-height: 200px; overflow-y: auto; position: absolute; bottom: 40px; left: 20px; right: 20px;')
 
-def log_event(message, color="blue"):
+def log_event(message, color="blue", timestamp=None):
     """Logs an event in the UI."""
+    timestamp = read_last_log_entry()
+    message = f"{message} - at: {timestamp}"
     with event_log:
         ui.label(message).style(f'background-color: rgba(230, 230, 230, 0.7); color: rgba(100, 100, 100, 1); font-family: "AmaticSC"; font-size: 16px; margin-bottom: 8px; padding: 10px 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
     if sound:
         ui.run_javascript(f'playSound("{sound}");')
 def simulate_crying():
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Get current timestamp
     log_event("🚨Baby is crying!", "red")
     ui.notify("Baby is crying!", color= "#red", position="top-right")  # Top-right position for notification
 
