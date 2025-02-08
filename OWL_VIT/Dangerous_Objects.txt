@@ -1,10 +1,10 @@
+face
+ear
+eye
+nose
+crib
+baby
 person
-fork
-water bottle
-phone
-stairs
-knives
+infant
+child
 scissors
-tools
-small toy
-cords
