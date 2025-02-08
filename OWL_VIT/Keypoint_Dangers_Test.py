@@ -1,6 +1,7 @@
 import cv2
 import torch
 import numpy as np
+import datetime
 from PIL import Image
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
@@ -40,17 +41,14 @@ model = OwlViTForObjectDetection.from_pretrained("google/owlvit-base-patch32")
 # List of dangerous objects to detect with OwlViT
 text_labels = constructDangerousObjectsList("Dangerous_Objects.txt")
 
-counter = 5
+counter = -1
 while True:
-
+    counter += 1
     ret, frame = cap.read()  # Read a frame from the webcam
     if not ret:
         break
 
-    if counter < 5:
-        counter += 1
-    else:
-        counter = 0
+    if counter == 0:
          # Pass the frame through Detectron2 model for inference
         detectron_outputs = predictor(frame)
 
@@ -60,7 +58,7 @@ while True:
 
     # Convert the frame to a PIL image
     image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-
+    
     # Process the image and perform object detection
     inputs = processor(text=text_labels, images=image, return_tensors="pt")
     outputs = model(**inputs)
@@ -78,9 +76,9 @@ while True:
     boxes, scores, result_labels = result["boxes"], result["scores"], result["text_labels"]
     out_detectron_img = out_detectron.get_image()[:, :, ::-1]
     out_detectron_img = np.ascontiguousarray(out_detectron_img, dtype=np.uint8)
-
     for box, score, text_label in zip(boxes, scores, result_labels):
         box = [round(i, 2)*1.2 for i in box.tolist()]
+
         cv2.rectangle(out_detectron_img, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (255, 0, 0), 2)
         cv2.putText(out_detectron_img, f"{text_label[11:]}: {round(score.item(), 3)}", (int(box[0]), int(box[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
     
