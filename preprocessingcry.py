@@ -8,6 +8,7 @@ import os
 import numpy as np
 import librosa.display
 import csv
+from datetime import datetime
 from scipy.signal import savgol_filter
 from scipy import signal
 
@@ -159,3 +160,14 @@ print(output)
 with open(output_file, 'w', newline = '') as f:
     writer = csv.writer(f)
     writer.writerows(output)
+
+if output:
+	current_time = datetime.now()
+	time_str = current_time.strftime("%H:%M")
+	date_str = current_time.strftime("%m-%d")
+	message = f"Baby is crying. Detected at: {time_str} on {date_str}."
+	print(message)
+
+	with open("crying_log.txt", "a", newline='') as log_file:
+		log_writer = csv.writer(log_file)
+		log_writer.writerow([message])

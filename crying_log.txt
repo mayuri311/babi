@@ -1,0 +1,3 @@
+Baby is crying. Detected at: 02:40 on 02-08.
+Baby is crying. Detected at: 02:42 on 02-08.
+Baby is crying. Detected at: 03:01 on 02-08.
