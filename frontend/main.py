@@ -7,13 +7,13 @@ import base64
 import signal
 import time
 import sys
+import urllib.request
 from PIL import Image
-# import torch
-# from transformers import OwlViTProcessor, OwlViTForObjectDetection
 import cv2
 import numpy as np
 from fastapi import Response
-import main_auxilary
+# import main_auxilary
+from main_auxilary import owl_vit_detection
 
 import cry_plotter_test as cryplot
 
@@ -24,18 +24,13 @@ from datetime import datetime
 black_1px = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBg+A8AAQQBAHAgZQsAAAAASUVORK5CYII='
 placeholder = Response(content=base64.b64decode(black_1px.encode('ascii')), media_type='image/png')
 
-
-# def is_overlapping(box1, box2):
-#     # Unpack the bounding boxes
-#     x1_min, y1_min, x1_max, y1_max = box1
-#     x2_min, y2_min, x2_max, y2_max = box2
-#     # Check if there is an overlap
-#     if x1_min < x2_max and x1_max > x2_min and y1_min < y2_max and y1_max > y2_min:
-#         return True
-#     return False
-
-# text_labels = constructClassList("../OWL_VIT/Dangerous_Objects.txt")
-
+async def vit_handler():
+    safety = await owl_vit_detection("filler")
+    if safety:
+        if safety == "DANGER":
+            simulate_danger()
+        elif safety == "SAFE":
+            simulate_safe()
 
 def setup() -> None:
 
@@ -51,11 +46,13 @@ def setup() -> None:
         # Timer to update the webcam feed
         ui.timer(interval=0.1, callback=lambda: video_image.set_source(f'/video/frame?{time.time()}'))
 
+        ui.timer(interval=0.5, callback=lambda: vit_handler())
+
         # Buttons below the webcam feed
-        ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-        ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-        ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-        ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
 
         cryplot.plotCryLogGraph()
 
@@ -72,7 +69,7 @@ def setup() -> None:
         ui.timer(1, lambda: signal.default_int_handler(signum, frame), once=True)
 
 
-    app.on_shutdown(main_auxiliary.shutdown_event)
+    app.on_shutdown(main_auxilary.shutdown_event)
     signal.signal(signal.SIGINT, handle_sigint)
     # We also need to disconnect clients when the app is stopped with Ctrl+C,
     # because otherwise they will keep requesting images which lead to unfinished subprocesses blocking the shutdown.
@@ -126,6 +123,10 @@ def simulate_crying():
 def simulate_danger():
     log_event("⚠️ Baby near a danger zone!", "orange")
     ui.notify("Danger detected!", color="orange", position="top-right")  # Top-right position for notification
+
+def simulate_safe():
+    log_event("Baby is safe in the crib.", "orange")
+    ui.notify("Baby is safe", color="orange", position="top-right")  # Top-right position for notification
 
 def simulate_motion():
     log_event("📹 Motion detected!", "green")

@@ -210,7 +210,8 @@ def processTopAudioFile(fileDirectory):
 		message = f"Baby is crying. Detected at: {time_str} on {date_str}."
 		print(message)
 
-		with open("/frontend/crying_log.txt", "a", newline='') as log_file:
+		with open("frontend/crying_log.txt", "a", newline='') as log_file:
+
 			log_writer = csv.writer(log_file)
 			log_writer.writerow([message])
 
