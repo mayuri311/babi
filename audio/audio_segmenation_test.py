@@ -2,7 +2,7 @@ import pyaudio
 import wave
 import os
 
-def segmentMake(segmentLength, stop_flag):
+def segmentMake(segmentLength):
     # Audio configuration
     CHUNK = 1024  # Block size
     FORMAT = pyaudio.paInt16  # Format
@@ -39,11 +39,8 @@ def segmentMake(segmentLength, stop_flag):
 
     print("Recording...")
 
-    print("Initial Stop Flag in Audio Segmentation", stop_flag())
-
     try:
-        while not stop_flag():
-            print("Recording Segment")
+        while True:
             frames = []
 
             # Read and store audio data
@@ -63,10 +60,10 @@ def segmentMake(segmentLength, stop_flag):
             print(f"Saved {output_file}")
             i += 1
 
-    finally:
-        print(f"In Audio Segmentation, stop flag is: {stop_flag()}")
+    except KeyboardInterrupt:
         print("Recording stopped")
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
-        # Clean up
+
+    # Clean up
+    stream.stop_stream()
+    stream.close()
+    p.terminate()

@@ -88,7 +88,7 @@ while True:
 
     # Break the loop on 'q' key press
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        breakg
+        break
 
 # Release the webcam and close windows
 cap.release()
