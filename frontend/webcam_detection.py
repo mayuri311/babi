@@ -33,7 +33,6 @@ def is_overlapping(box1, box2):
 text_labels = constructClassList("Dangerous_Objects.txt")
 
 def detect_boxes(frame):
-    print("detecting")
     image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
     # Process the image and perform object detection

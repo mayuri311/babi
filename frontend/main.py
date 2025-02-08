@@ -24,10 +24,11 @@ placeholder = Response(content=base64.b64decode(black_1px.encode('ascii')), medi
 
 async def vit_handler():
     safety = await owl_vit_detection("filler")
-    print(safety)
     if safety:
         if safety == "DANGER":
             simulate_danger()
+        elif safety == "SAFE":
+            simulate_safe()
 
 def setup() -> None:
 
@@ -46,10 +47,10 @@ def setup() -> None:
         ui.timer(interval=0.5, callback=lambda: vit_handler())
 
         # Buttons below the webcam feed
-        ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-        ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-        ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
-        ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Simulate Baby Crying', on_click=simulate_crying, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Simulate Danger Zone Alert', on_click=simulate_danger, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Simulate Motion Detection', on_click=simulate_motion, color="#c791db").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
+        # ui.button('Clear Event Log', on_click=clear_log, color="gray").style('font-size: 18px; color: #FFF; border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);')
 
     async def disconnect() -> None:
         """Disconnect all clients from current running server."""
@@ -116,6 +117,10 @@ def simulate_crying():
 def simulate_danger():
     log_event("⚠️ Baby near a danger zone!", "orange")
     ui.notify("Danger detected!", color="orange", position="top-right")  # Top-right position for notification
+
+def simulate_safe():
+    log_event("Baby is safe in the crib.", "orange")
+    ui.notify("Baby is safe", color="orange", position="top-right")  # Top-right position for notification
 
 def simulate_motion():
     log_event("📹 Motion detected!", "green")
