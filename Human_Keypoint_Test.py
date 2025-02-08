@@ -32,7 +32,7 @@ while True:
 
     # Display the processed frame
     cv2.imshow("Detectron2 Output", out.get_image()[:, :, ::-1])
-
+    
     # Press 'q' to exit the webcam loop
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
