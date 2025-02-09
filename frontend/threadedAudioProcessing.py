@@ -41,7 +41,7 @@ def delete_file_if_exists(file_path):
 
 def getTopFile(folder_path):
 	files = os.listdir(folder_path)
-	print(files)
+	# print(files)
 	if not files:
 		return None
 	return files[0]
@@ -210,7 +210,7 @@ def processTopAudioFile(fileDirectory):
 		message = f"Baby is crying. Detected at: {time_str} on {date_str}."
 		print(message)
 
-		with open("frontend/crying_log.txt", "a", newline='') as log_file:
+		with open("crying_log.txt", "a", newline='') as log_file:
 
 			log_writer = csv.writer(log_file)
 			log_writer.writerow([message])

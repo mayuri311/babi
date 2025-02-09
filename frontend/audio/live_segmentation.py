@@ -7,7 +7,7 @@ def segmentMake(segmentLength, stop_flag):
     CHUNK = 1024  # Block size
     FORMAT = pyaudio.paInt16  # Format
     CHANNELS = 1  # Mono audio
-    RATE = 44100  # Sample rate (Hz)
+    RATE = 48000  # Sample rate (Hz)
     RECORD_SECONDS = segmentLength  # Length of each recording in seconds
     OUTPUT_FOLDER = "Segments"  # Folder where .wav files will be saved
     i = 0  # File counter
@@ -37,18 +37,18 @@ def segmentMake(segmentLength, stop_flag):
                     input=True,
                     frames_per_buffer=CHUNK)
 
-    print("Recording...")
+    # print("Recording...")
 
-    print("Initial Stop Flag in Audio Segmentation", stop_flag())
+    # print("Initial Stop Flag in Audio Segmentation", stop_flag())
 
     try:
         while not stop_flag():
-            print("Recording Segment")
+            # print("Recording Segment")
             frames = []
 
             # Read and store audio data
             for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-                data = stream.read(CHUNK)
+                data = stream.read(CHUNK, exception_on_overflow=False)
                 frames.append(data)
 
             # Save the audio data to a .wav file in the output folder

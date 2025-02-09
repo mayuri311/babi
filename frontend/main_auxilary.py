@@ -10,15 +10,17 @@ from datetime import datetime
 import sys
 import threading
 import time
-# import pyaudio
+import pyaudio
 import wave
 import cv2
 import os
 from fastapi import Response, status
 
-# from audio import live_segmentation as ap
-# import threadedAudioProcessing as tap
-# from webcam_detection import detect_boxes
+from audio import live_segmentation as ap
+import threadedAudioProcessing as tap
+
+# Comment out if running without OwlViT
+from webcam_detection import detect_boxes
 
 
 video_capture = cv2.VideoCapture(0)
@@ -29,7 +31,6 @@ def convert(frame: np.ndarray) -> bytes:
     return imencode_image.tobytes()
 
 async def owl_vit_detection(value):
-    video_capture = cv2.VideoCapture(0)
     if not video_capture.isOpened():
         return placeholder
     # The `video_capture.read` call is a blocking function.
@@ -41,6 +42,11 @@ async def owl_vit_detection(value):
     # Comment out to run without OwlViT
     safety = detect_boxes(frame)
     return safety
+
+# async def update_image(value):
+#     # Start the threads
+#     audio_sampling_thread.start()
+#     audio_processing_thread.start()
 
 def thereallyjankfunction():
     # OpenCV is used to access the webcam.
@@ -93,34 +99,35 @@ thereallyjankfunction()
 #         time.sleep(1)  # Placeholder for processing time
 
 # # Image processing task
-# def image_processing():
-#     global stop_threads
+# # def image_processing():
+# #     global stop_threads
 
-#     thereallyjankfunction()
+# #     thereallyjankfunction()
 
 # # Create threads for each task
 # audio_sampling_thread = threading.Thread(target=audio_sampling)
 # audio_processing_thread = threading.Thread(target=audio_processing)
-# image_processing_thread = threading.Thread(target=image_processing)
+# # image_processing_thread = threading.Thread(target=image_processing)
 
 # # Start the threads
 # audio_sampling_thread.start()
 # audio_processing_thread.start()
-# image_processing_thread.start()
-
-# try:
-#     # Main loop to keep the program running until interrupted
-#     while True:
-#         time.sleep(1)
-#         print(stop_threads)
-# except KeyboardInterrupt:
-#     # When Ctrl+C is pressed, set the stop flag
-#     stop_threads = True
-#     print("Stopping all tasks...")
+# # image_processing_thread.start()
+# update_image()
+# print("here")
+# thereallyjankfunction()
+# # try:
+# #     # Main loop to keep the program running until interrupted
+# #     while True:
+# #         time.sleep(1)
+# # except KeyboardInterrupt:
+# #     # When Ctrl+C is pressed, set the stop flag
+# #     stop_threads = True
+# #     print("Stopping all tasks...")
 
 # # Wait for all threads to finish
 # audio_sampling_thread.join()
 # audio_processing_thread.join()
-# image_processing_thread.join()
+# #image_processing_thread.join()
 
 # print("Tasks quit successfully")
